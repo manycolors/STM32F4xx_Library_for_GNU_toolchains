@@ -26,5 +26,6 @@ Thumbs.db
 
 # Library (checking license)
 STM32F4*
+stm32f4*
 inc/
 lib/

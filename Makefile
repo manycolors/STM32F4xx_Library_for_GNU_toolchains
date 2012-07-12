@@ -1,24 +1,35 @@
 #  Project Name
-PROJECT=stm32f4_stdperiph
+PERIPH_PROJECT=stm32f4_periph
+USB_PROJECT=stm32f4_usb
+USB_HOST_PROJECT=stm32f4_usbhost
+USB_OTG_PROJECT=stm32f4_usbotg
+
+LIB_HOME=STM32F4-Discovery_FW_V1.1.0/Libraries
 
 #  List of the objects files to be compiled/assembled
 
-SUBDIRS := src
+PERIPH_SOURCES:=lib.c $(wildcard $(LIB_HOME)/STM32F4xx_StdPeriph_Driver/src/*.c) 
+PERIPH_OBJECTS:=$(PERIPH_SOURCES:.c=.o)
+#USB_SOURCES:=lib.c $(wildcard $(LIB_HOME)/STM32_USB_Device_Library/Core/src/*.c) 
+#USB_OBJECTS:=$(USB_SOURCES:.c=.o)
+#USB_OTG_SOURCES:=$(filter-out $(LIB_HOME)/STM32_USB_OTG_Driver/src/usb_bsp_template.c, $(wildcard $(LIB_HOME)/STM32_USB_OTG_Driver/src/*.c))
+#USB_OTG_OBJECTS:=$(USB_OTG_SOURCES:.c=.o)
+#USB_HOST_SOURCES:=$(wildcard $(LIB_HOME)/STM32_USB_HOST_Library/Core/src/*.c)
+#USB_HOST_OBJECTS:=$(USB_HOST_SOURCES:.c=.o)
 
-
-SOURCES:=$(wildcard src/*.c)
-
-OBJECTS:=$(SOURCES:.c=.o)
-OPTIMIZATION = -Os -fno-schedule-insns2 -fsection-anchors -fpromote-loop-indices -ffunction-sections -DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -fomit-frame-pointer -fno-unroll-loops -D__BUFSIZ__=256 -mabi=aapcs
+OPTIMIZATION = -Os -fno-schedule-insns2 -fsection-anchors -fpromote-loop-indices -ffunction-sections -DUSE_STDPERIPH_DRIVER -DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -DUSB_OTG_HS_CORE -DUSE_ULPI_PHY -DUSE_USB_OTG_HS -fomit-frame-pointer -fno-unroll-loops -D__BUFSIZ__=256 -mabi=aapcs
 #DEBUG = -g
+INCLUDES = -I./STM32F4-Discovery_FW_V1.1.0/Project/Demonstration -I$(LIB_HOME)/CMSIS/Include -I$(LIB_HOME)/STM32F4xx_StdPeriph_Driver/inc \
+-I$(LIB_HOME)/STM32_USB_Device_Library/Core/inc -I$(LIB_HOME)/STM32_USB_HOST_Library/Core/inc \
+-I$(LIB_HOME)/STM32_USB_OTG_Driver/inc -I$(LIB_HOME)/CMSIS/ST/STM32F4xx/Include \
+-I./STM32F4-Discovery_FW_V1.1.0/Utilities/STM32F4-Discovery/ -I./STM32F4-Discovery_FW_V1.1.0/Project/FW_upgrade/inc/
 
 #  Compiler Options
-GCFLAGS = -Wall -mcpu=cortex-m4 -mfloat-abi=softfp -mthumb $(OPTIMIZATION) $(DEBUG) 
-GCFLAGS += -I./inc
+CFLAGS = -Wall -mcpu=cortex-m4 -mfloat-abi=softfp -mthumb $(OPTIMIZATION) $(DEBUG) 
+CFLAGS += -I./inc $(INCLUDES)
 LDFLAGS = -static -mcpu=cortex-m4 -mfloat-abi=softfp -mthumb $(OPTIMIZATION)
-#LDFLAGS += -L/Users/shota/Developer/Cross/arm-cs-tools-2011.09-69-0084249-20120622/arm-none-eabi/lib/thumb2/
 ASFLAGS = -mcpu=cortex-m4 --defsym RAM_MODE=0
-START =  -Wl,-Map=$(PROJECT).map -T$(LSCRIPT)
+
 MAKE_FLAGS = --no-print-directory CC='$(CC)' LL='$(LL)' ALL_CFLAGS='$(ALL_CFLAGS)'
 
 #  Compiler/Assembler/Linker Paths
@@ -34,25 +45,31 @@ SIZE = arm-none-eabi-size
 
 #########################################################################
 .PHONY: all
-all: $(OBJECTS)
-	$(AR) r libstm32f4_stdperiph.a $(OBJECTS)
+all: $(PERIPH_OBJECTS) $(USB_OBJECTS) $(USB_OTG_OBJECTS) host_objects
+	$(AR) r lib$(PERIPH_PROJECT).a $(PERIPH_OBJECTS)
+#	$(AR) r lib$(USB_PROJECT).a $(USB_OBJECTS)
+#	$(AR) r lib$(USB_HOST_PROJECT).a $(USB_HOST_OBJECTS)
+#	$(AR) r lib$(USB_OTG_PROJECT).a $(USB_OTG_OBJECTS)
+
 #	@$(MAKE) -C src $(MAKE_FLAGS)
 #	
 
+
+host_objects: $(USB_HOST_OBJECTS)
+
 clean:
-	$(REMOVE) $(OBJECTS)
-	$(REMOVE) lib$(PROJECT).a
-	$(REMOVE) lib$(PROJECT).a
+	$(REMOVE) $(PERIPH_OBJECTS) $(USB_OBJECTS) $(USB_HOST_OBJECTS) $(USB_OTG_OBJECTS)
+	$(REMOVE) lib*.a
 
 #########################################################################
 #  Default rules to compile .c and .cpp file to .o
 #  and assemble .s files to .o
 
 .c.o :
-	$(GCC) $(GCFLAGS) -c $< -o $@
+	$(GCC) $(CFLAGS) -c $< -o $@
 
 .cpp.o :
-	$(GCC) $(GCFLAGS) -c $<
+	$(GCC) $(CFLAGS) -c $<
 
 .S.o :
 	$(AS) $(ASFLAGS) -o $@ $<
