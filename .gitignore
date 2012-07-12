@@ -25,7 +25,6 @@
 Thumbs.db
 
 # Library (checking license)
-Library/
+STM32F4*
+inc/
 lib/
-include/periphs
-STM32F4xx/
