@@ -1,0 +1,31 @@
+# Object files
+*.o
+
+# Libraries
+*.lib
+#*.a
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+
+# Executables
+*.exe
+*.out
+
+# Embed
+*.elf
+*.bin
+*.lss
+*.map
+*.hex
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Library (checking license)
+Library/
+lib/
+include/periphs
+STM32F4xx/
