@@ -3,7 +3,7 @@
 
 # Libraries
 *.lib
-*.a
+#*.a
 
 # Shared objects (inc. Windows DLLs)
 *.dll
@@ -29,4 +29,3 @@ STM32F4*
 stm32f4*
 inc/
 lib/
-*.zip

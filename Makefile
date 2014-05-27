@@ -8,7 +8,7 @@ LIB_HOME=STM32F4-Discovery_FW_V1.1.0/Libraries
 
 #  List of the objects files to be compiled/assembled
 
-PERIPH_SOURCES:=lib.c $(wildcard $(LIB_HOME)/STM32F4xx_StdPeriph_Driver/src/*.c) 
+PERIPH_SOURCES:=$(wildcard $(LIB_HOME)/STM32F4xx_StdPeriph_Driver/src/*.c) 
 PERIPH_OBJECTS:=$(PERIPH_SOURCES:.c=.o)
 #USB_SOURCES:=lib.c $(wildcard $(LIB_HOME)/STM32_USB_Device_Library/Core/src/*.c) 
 #USB_OBJECTS:=$(USB_SOURCES:.c=.o)
@@ -17,7 +17,7 @@ PERIPH_OBJECTS:=$(PERIPH_SOURCES:.c=.o)
 #USB_HOST_SOURCES:=$(wildcard $(LIB_HOME)/STM32_USB_HOST_Library/Core/src/*.c)
 #USB_HOST_OBJECTS:=$(USB_HOST_SOURCES:.c=.o)
 
-OPTIMIZATION = -Os -fno-schedule-insns2 -fsection-anchors -fpromote-loop-indices -ffunction-sections -DUSE_STDPERIPH_DRIVER -DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -DUSB_OTG_HS_CORE -DUSE_ULPI_PHY -DUSE_USB_OTG_HS -fomit-frame-pointer -fno-unroll-loops -D__BUFSIZ__=256 -mabi=aapcs
+OPTIMIZATION = -Os -fno-schedule-insns2 -fsection-anchors -ffunction-sections -DUSE_STDPERIPH_DRIVER -DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -DUSB_OTG_HS_CORE -DUSE_ULPI_PHY -DUSE_USB_OTG_HS -fomit-frame-pointer -fno-unroll-loops -D__BUFSIZ__=256 -mabi=aapcs
 #DEBUG = -g
 INCLUDES = -I./STM32F4-Discovery_FW_V1.1.0/Project/Demonstration -I$(LIB_HOME)/CMSIS/Include -I$(LIB_HOME)/STM32F4xx_StdPeriph_Driver/inc \
 -I$(LIB_HOME)/STM32_USB_Device_Library/Core/inc -I$(LIB_HOME)/STM32_USB_HOST_Library/Core/inc \
