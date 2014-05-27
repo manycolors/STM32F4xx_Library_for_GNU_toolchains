@@ -30,3 +30,5 @@ stm32f4*
 inc/
 lib/
 *.zip
+*~
+*.bak
